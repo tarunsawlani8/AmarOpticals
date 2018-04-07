@@ -49,10 +49,10 @@ if ("success".equalsIgnoreCase(error)) {%>
 <div class="alert">Order cannot be added to Database due to some issues</div>
 <%} 
 
-if ( session.getAttribute("message") != null) {
+if ( request.getAttribute("message") != null) {
 
 	%>
-	<p class="alert"><span style="font-style: italic;"><%=(String)session.getAttribute("message")%></span> 
+	<p class="alert"><span style="font-style: italic;"><%=(String)request.getAttribute("message")%></span> 
 	</p>
 	
 <% } %>

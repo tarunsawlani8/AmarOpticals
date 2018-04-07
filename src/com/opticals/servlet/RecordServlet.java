@@ -52,14 +52,14 @@ public class RecordServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		String pageAction = request.getParameter("pageAction");
-		HttpSession session = request.getSession(false);
+		
 		System.out.println("Record Controller");
 		
 		
 			if (("insertOrders").equals(pageAction)) {
 				
 				if (!StringUtils.isNumeric(request.getParameter("orderId")) || !StringUtils.isNumeric(request.getParameter("pendingAmount"))){
-				session.setAttribute("message", "Order Id/Pending Amount must be Number");
+					request.setAttribute("message", "Order Id/Pending Amount must be Number");
 				dispatch(request, response, "dashboard.jsp");
 				CommonUtils.CacheControl(response);
 						return;
@@ -77,7 +77,7 @@ public class RecordServlet extends HttpServlet {
 		
 		Orders orders =	CommonUtils.mapOrders(request);
 		
-	
+		HttpSession session = request.getSession(false);
 		if (("insertOrders").equals(pageAction)) {
 				
 		orders = CommonUtils.executeQuery("INSERT INTO opticals_orders  VALUES(?, ?, ?,?,?, ?)", orders, pageAction);
