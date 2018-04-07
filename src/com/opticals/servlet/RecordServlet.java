@@ -1,11 +1,9 @@
 package com.opticals.servlet;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+
 import java.io.IOException;
-import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -53,18 +51,18 @@ public class RecordServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		String pageAction = request.getParameter("pageAction");
 		
-		System.out.println("Record Controller");
+		System.out.println("Record Controller page Action"+pageAction);
 		
-		HttpSession session = request.getSession(false);
-			if (("insertOrders").equals(pageAction)) {
+		
+			if ("insertOrders".equals(pageAction)) {
 				
 				if (!StringUtils.isNumeric(request.getParameter("orderId")) || !StringUtils.isNumeric(request.getParameter("pendingAmount"))){
-					session.setAttribute("message", "Order Id/Pending Amount must be Number");
+					request.setAttribute("message", "Order Id/Pending Amount must be Number");
 				dispatch(request, response, "dashboard.jsp");
 				CommonUtils.CacheControl(response);
 						return;
 				
-				}} else {
+				}} else if ("getOrderDetails".equals(pageAction))  {
 					
 					if (!StringUtils.isNumeric(request.getParameter("orderId"))){
 				request.setAttribute("message", "Order Id must be Number");
@@ -77,29 +75,35 @@ public class RecordServlet extends HttpServlet {
 		
 		Orders orders =	CommonUtils.mapOrders(request);
 		
-		
+		HttpSession session = request.getSession(false);
 		if (("insertOrders").equals(pageAction)) {
+			
+		Orders	oldOrder = CommonUtils.executeQuery("SELECT * FROM opticals_orders  WHERE ORDER_ID=?", orders, "getOrderDetails", null);
 				
-		orders = CommonUtils.executeQuery("INSERT INTO opticals_orders  VALUES(?, ?, ?,?,?, ?)", orders, pageAction);
-		
+			if (oldOrder == null) {
+		orders = CommonUtils.executeQuery("INSERT INTO opticals_orders  VALUES(?, ?, ?,?,?, ?)", orders, pageAction, null);
+			} else {
+				orders = CommonUtils.executeQuery("UPDATE opticals_orders SET DELIVERY_STATUS=?, DELIVERY_DATE=? WHERE ORDER_ID=?",
+						orders, pageAction, null);
+			}
 		
 		if (orders != null) {
-		session.setAttribute("actionStatus", "success");
-		session.setAttribute("message", "Order has been successfully"
+			request.setAttribute("actionStatus", "success");
+		request.setAttribute("message", "Order has been successfully"
 				+ " added to the Database with orderId "+ orders.getOrderId());
 	
 		}else {
-			session.setAttribute("actionStatus", "failure");
-			session.setAttribute("message", "Order cannot be added to Database due to some issues");
+			request.setAttribute("actionStatus", "failure");
+			request.setAttribute("message", "Order cannot be added to Database due to some issues");
 		
 		}
 		
 		dispatch(request, response, "dashboard.jsp");
 		CommonUtils.CacheControl(response);
 		
-			} else {
+			} else if ("getOrderDetails".equals(pageAction))  {
 				
-				orders = CommonUtils.executeQuery("SELECT * FROM opticals_orders  WHERE ORDER_ID= ?", orders, pageAction);
+				orders = CommonUtils.executeQuery("SELECT * FROM opticals_orders  WHERE ORDER_ID= ?", orders, pageAction, null);
 				if (orders != null) {
 					request.setAttribute("actionStatus", "success");
 					request.setAttribute("orderObj", orders);
@@ -108,6 +112,50 @@ public class RecordServlet extends HttpServlet {
 				
 					}
 				dispatch(request, response, "login.jsp");
+				CommonUtils.CacheControl(response);
+			} else if (("searchRecords").equals(pageAction))  {
+				
+				StringBuilder strBuilder = new StringBuilder();
+				strBuilder.append("SELECT * FROM opticals_orders");
+				
+				boolean andReq = false;
+				if (orders.getOrderId()!= null) {
+					
+					if (!andReq) {
+						strBuilder.append(" WHERE ");
+					}
+					
+					strBuilder.append("ORDER_ID="+orders.getOrderId());
+					andReq= true;
+				}
+				
+				if (orders.getCustomerName()!= null) {
+					
+					if (andReq) {
+						strBuilder.append(" AND ");
+					} else {
+						strBuilder.append(" WHERE ");
+					}
+					
+					strBuilder.append("CUSTOMER_NAME LIKE '"+orders.getCustomerName()+"%'");
+					andReq = true;
+				}
+				
+					if (orders.getDeliveryStatus()!= null) {
+						if (andReq) {
+							strBuilder.append(" AND ");
+						} else {
+							strBuilder.append(" WHERE ");
+						}
+					
+					strBuilder.append("DELIVERY_STATUS LIKE '"+orders.getDeliveryStatus()+"'");
+				}
+					List<Orders> ordersList = new ArrayList<>();
+				 CommonUtils.executeQuery(strBuilder.toString(), orders, pageAction, ordersList );
+					request.setAttribute("message", "Number of records found :"+ordersList.size());
+					request.setAttribute("orderList", ordersList);
+				
+				dispatch(request, response, "dashboard.jsp");
 				CommonUtils.CacheControl(response);
 			}
 		

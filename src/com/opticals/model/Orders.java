@@ -2,22 +2,22 @@ package com.opticals.model;
 
 public class Orders {
 
-	private int orderId;
-	private int pendingAmount ;
+	private Integer orderId;
+	private Integer pendingAmount ;
 	private String customerName;
 	private String customerContact;
 	private String deliveryStatus;
 	private String deliveryDate;
-	public int getOrderId() {
+	public Integer getOrderId() {
 		return orderId;
 	}
-	public void setOrderId(int orderId) {
+	public void setOrderId(Integer orderId) {
 		this.orderId = orderId;
 	}
-	public int getPendingAmount() {
+	public Integer getPendingAmount() {
 		return pendingAmount;
 	}
-	public void setPendingAmount(int pendingAmount) {
+	public void setPendingAmount(Integer pendingAmount) {
 		this.pendingAmount = pendingAmount;
 	}
 	public String getCustomerName() {
