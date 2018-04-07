@@ -58,7 +58,7 @@ public class RecordServlet extends HttpServlet {
 		
 			if (("insertOrders").equals(pageAction)) {
 				
-				if (!StringUtils.isNumeric(request.getParameter("orderId")) && !StringUtils.isNumeric(request.getParameter("pendingPayment"))){
+				if (!StringUtils.isNumeric(request.getParameter("orderId")) && !StringUtils.isNumeric(request.getParameter("pendingAmount"))){
 				session.setAttribute("message", "Order Id/Pending Amount must be Number");
 				dispatch(request, response, "dashboard.jsp");
 				CommonUtils.CacheControl(response);
