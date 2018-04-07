@@ -55,11 +55,11 @@ public class RecordServlet extends HttpServlet {
 		
 		System.out.println("Record Controller");
 		
-		
+		HttpSession session = request.getSession(false);
 			if (("insertOrders").equals(pageAction)) {
 				
 				if (!StringUtils.isNumeric(request.getParameter("orderId")) || !StringUtils.isNumeric(request.getParameter("pendingAmount"))){
-					request.setAttribute("message", "Order Id/Pending Amount must be Number");
+					session.setAttribute("message", "Order Id/Pending Amount must be Number");
 				dispatch(request, response, "dashboard.jsp");
 				CommonUtils.CacheControl(response);
 						return;
@@ -77,7 +77,7 @@ public class RecordServlet extends HttpServlet {
 		
 		Orders orders =	CommonUtils.mapOrders(request);
 		
-		HttpSession session = request.getSession(false);
+		
 		if (("insertOrders").equals(pageAction)) {
 				
 		orders = CommonUtils.executeQuery("INSERT INTO opticals_orders  VALUES(?, ?, ?,?,?, ?)", orders, pageAction);
@@ -85,9 +85,13 @@ public class RecordServlet extends HttpServlet {
 		
 		if (orders != null) {
 		session.setAttribute("actionStatus", "success");
-		session.setAttribute("orderId", orders.getOrderId());
+		session.setAttribute("message", "Order has been successfully"
+				+ " added to the Database with orderId "+ orders.getOrderId());
+	
 		}else {
 			session.setAttribute("actionStatus", "failure");
+			session.setAttribute("message", "Order cannot be added to Database due to some issues");
+		
 		}
 		
 		dispatch(request, response, "dashboard.jsp");

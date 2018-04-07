@@ -43,16 +43,10 @@ if (StringUtils.isNotBlank(userName))
 String error =  (String)session.getAttribute("actionStatus");
 
 
-if ("success".equalsIgnoreCase(error)) {%>
-<div class="alert">Order has been successfully added to the Database with orderId <%= (Integer)session.getAttribute("orderId")%></div>
-<% }else if ("failure".equalsIgnoreCase((String) request.getAttribute("actionStatus"))) { %>
-<div class="alert">Order cannot be added to Database due to some issues</div>
-<%} 
-
-if ( request.getAttribute("message") != null) {
+if ( session.getAttribute("message") != null) {
 
 	%>
-	<p class="alert"><span style="font-style: italic;"><%=(String)request.getAttribute("message")%></span> 
+	<p class="alert"><span style="font-style: italic;"><%=(String)session.getAttribute("message")%></span> 
 	</p>
 	
 <% } %>
