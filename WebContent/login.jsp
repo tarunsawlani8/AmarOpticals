@@ -64,7 +64,7 @@ Orders orderInfo =(Orders)request.getAttribute("orderObj");
 
 
 <form method="POST" action="recordController">
-<input type="hidden" pageAction="getOrderDetails">
+<input type="hidden" name="pageAction" value="getOrderDetails">
 <input  type="text" class="boxes" name="orderId" placeholder="Enter your Order Id" maxlength="20"/>
 <input class="button" type="submit" value="Submit"/>
 </form>
