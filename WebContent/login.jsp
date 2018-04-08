@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width">
 <title>Amar Opticals | Eyeglasses, Sunglasses & Contact Lens</title>
 <link rel="stylesheet" href="style.css">
-<link rel="icon" href="./images/titleimage.png" type="image/gif" sizes="16x16"/>
+<link rel="icon" href="./images/titleimage.jpg"  type="image/gif" size="16x16"/>
 </head>
 <body>
 <header>
@@ -37,8 +37,8 @@
 </section> -->
 <section id="showcase" class="row">
 <div id="cf" class="col">
-  <img class="top" src="./images/99.jpg" alt="offer1" />
-  <img class="bottom" src="./images/framefree.jpg" alt="offer2" />
+  <img class="top" src="./images/800.jpg" alt="offer1" />
+  <img class="bottom" src="./images/nosepick.jpg" alt="offer2" />
 </div>
 <div class="col container">
 <h1>Track Your Order Here</h1>
