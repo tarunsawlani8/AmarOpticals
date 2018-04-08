@@ -1,3 +1,5 @@
+<%@page import="com.opticals.model.Orders"%>
+<%@page import="java.util.List"%>
 <%@page import="org.apache.commons.lang3.StringUtils"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -40,16 +42,17 @@ if (StringUtils.isNotBlank(userName))
 <section id="showcase2">
 <div>
 <% 
-String error =  (String)session.getAttribute("actionStatus");
+String error =  (String)request.getAttribute("actionStatus");
 
 
-if ( session.getAttribute("message") != null) {
+if ( request.getAttribute("message") != null) {
 
 	%>
-	<p class="alert"><span style="font-style: italic;"><%=(String)session.getAttribute("message")%></span> 
+	<p class="alert"><span style="font-style: italic;"><%=(String)request.getAttribute("message")%></span> 
 	</p>
 	
 <% } %>
+<h1>Add Records</h1>
 <form action="recordController" method="POST">
 <input type="hidden" name="pageAction" value="insertOrders" />
 Order Id :<input type="text" name="orderId" maxlength="20" />
@@ -68,6 +71,50 @@ Pending Amount : <input type="text" name="pendingAmount"  maxlength="10"/>
 </form>
 </div>
 
+<div>
+<h1>Search Records</h1>
+<form action="recordController" method="POST">
+<input type="hidden" name="pageAction" value="searchRecords" />
+Order Id :<input type="text" name="orderId" maxlength="20" />
+Customer Name :<input type="text" name="customerName" maxlength="20"/>
+Delivery Status :<select name="deliveryStatus" maxlength="20" >
+<option selected="selected" value="NOT STARTED">NOT STARTED</option>
+<option  value="IN PROGRESS">IN PROGRESS</option>
+<option  value="READY FOR PICKUP">READY FOR PICKUP</option>
+<option  value="DELIVERED">DELIVERED</option>
+</select>
+
+<input type="submit" value="Submit"></input>
+</form>
+</div>
+<% if (request.getAttribute("orderList") != null) {
+	List<Orders> ordersList = (List<Orders>) request.getAttribute("orderList");
+	if (ordersList.size() > 0) {%>
+		<table align="center" style="border: 2px solid maroon ">
+		<tr>
+		<th>S.No</th>
+		<th>Order Id</th>
+		<th>Customer Name</th>
+		<th>Customer Contact</th>
+		<th>Delivery Status</th>
+		<th>Delivery Date</th>
+		<th>Pending Amount</th>
+		</tr>
+	<% 	for (int i=0; i < ordersList.size(); i++) { %>
+			<tr>
+			<td><%=i+1%></td>
+			<td><%=ordersList.get(i).getOrderId()%></td>
+			<td><%=ordersList.get(i).getCustomerName()%></td>
+			<td><%=ordersList.get(i).getCustomerContact() %></td>
+			<td><%=ordersList.get(i).getDeliveryStatus() %></td>
+			<td><%=ordersList.get(i).getDeliveryDate() %></td>
+			<td><%=ordersList.get(i).getPendingAmount() %></td>
+			</tr>
+			
+	<% 	} %>
+		</table>
+	
+<% }}%>
 <footer>Amar Opticals Copyright &copy; 2018</footer>
 </body>
 </html>
